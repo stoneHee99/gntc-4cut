@@ -36,14 +36,37 @@ const PhotoStudio: React.FC<PhotoStudioProps> = ({ frame, onComplete }) => {
   //   startWebcam();
   // }, [frame.positions]);
 
+  // useEffect(() => {
+  //   const enumerateDevices = async () => {
+  //     try {
+  //       const devices = await navigator.mediaDevices.enumerateDevices();
+  //       const videoDevices = devices.filter(device => device.kind === 'videoinput');
+  //       setDevices(videoDevices);
+  //       if (videoDevices.length > 0) {
+  //         setSelectedDeviceId(videoDevices[0].deviceId);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error enumerating devices: ", err);
+  //     }
+  //   };
+  //
+  //   enumerateDevices();
+  // }, []);
+
   useEffect(() => {
     const enumerateDevices = async () => {
       try {
+        console.log("Enumerating devices...");
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter(device => device.kind === 'videoinput');
-        setDevices(videoDevices);
+
         if (videoDevices.length > 0) {
+          setDevices(videoDevices);
           setSelectedDeviceId(videoDevices[0].deviceId);
+          console.log(`Found video devices: ${videoDevices.map(device => device.label).join(", ")}`);
+          console.log(`Selected device ID: ${videoDevices[0].deviceId}`);
+        } else {
+          console.warn("No video devices found.");
         }
       } catch (err) {
         console.error("Error enumerating devices: ", err);
