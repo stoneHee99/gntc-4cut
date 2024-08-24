@@ -55,19 +55,27 @@ const PhotoStudio: React.FC<PhotoStudioProps> = ({ frame, onComplete }) => {
 
   useEffect(() => {
     const startWebcam = async () => {
-      if (!selectedDeviceId) return;
+      if (!selectedDeviceId) {
+        console.warn("No device selected");
+        return;
+      }
 
       try {
+        console.log(`Attempting to access webcam with device ID: ${selectedDeviceId}`);
+
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: selectedDeviceId,
             width: { ideal: frame.positions[0].width },
-            height: { ideal: frame.positions[0].height }
-          }
+            height: { ideal: frame.positions[0].height },
+          },
         });
+
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+          console.log('Webcam stream started successfully');
         }
+
       } catch (err) {
         console.error("Error accessing webcam: ", err);
       }
@@ -75,6 +83,29 @@ const PhotoStudio: React.FC<PhotoStudioProps> = ({ frame, onComplete }) => {
 
     startWebcam();
   }, [selectedDeviceId, frame.positions]);
+
+  // useEffect(() => {
+  //   const startWebcam = async () => {
+  //     if (!selectedDeviceId) return;
+  //
+  //     try {
+  //       const stream = await navigator.mediaDevices.getUserMedia({
+  //         video: {
+  //           deviceId: selectedDeviceId,
+  //           width: { ideal: frame.positions[0].width },
+  //           height: { ideal: frame.positions[0].height }
+  //         }
+  //       });
+  //       if (videoRef.current) {
+  //         videoRef.current.srcObject = stream;
+  //       }
+  //     } catch (err) {
+  //       console.error("Error accessing webcam: ", err);
+  //     }
+  //   };
+  //
+  //   startWebcam();
+  // }, [selectedDeviceId, frame.positions]);
 
   const takePhoto = useCallback(() => {
     if (canvasRef.current && videoRef.current) {
